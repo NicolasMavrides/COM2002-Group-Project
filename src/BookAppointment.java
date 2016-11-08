@@ -3,7 +3,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class BookAppointment extends JFrame {
-	private JLabel item1;
 	
 	public BookAppointment() {
 		super("Book Appointment");
