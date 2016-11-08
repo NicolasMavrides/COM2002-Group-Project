@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -51,3 +52,15 @@ public class Calendar extends JPanel {
     }
 	
 }
+=======
+import java.awt.FlowLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+public class Calendar extends JFrame {
+	
+	public Calendar() {
+		super("View Calendar");
+	}
+}
+>>>>>>> be41b4fdbd719dfc18d791f84820f1dd335a72c4
