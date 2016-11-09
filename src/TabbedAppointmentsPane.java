@@ -7,8 +7,24 @@ public class TabbedAppointmentsPane extends JPanel {
 		super(new BorderLayout());
 		
 		JPanel navPane = new JPanel(new FlowLayout());
-		JPanel gtWeek = new JPanel(new FlowLayout());
-		gtWeek.add(new JLabel("Go to: "));		
+		
+		JPanel dateSelPane = createDateSelect("Go to");
+		dateSelPane.add(new JButton("Search"));
+		navPane.add(dateSelPane);
+		navPane.add(new JButton("Previous Week"));
+		navPane.add(new JButton("Next Week"));
+		add(navPane,BorderLayout.NORTH);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(); 
+        tabbedPane.addTab("Dentist", new Calendar());
+        tabbedPane.addTab("Hygienist", new Calendar());
+        add(tabbedPane,BorderLayout.CENTER);
+        
+	}
+	
+	private JPanel createDateSelect(String labelText) {
+		JPanel datePane = new JPanel(new FlowLayout());
+		datePane.add(new JLabel(labelText));		
 		
 		//day
 		JComboBox<Integer> dayList = new JComboBox<Integer>();
@@ -25,21 +41,11 @@ public class TabbedAppointmentsPane extends JPanel {
 		for (int i=2016;i>=1996;i--) //TODO add min and max year
 			yearList.addItem(i);
 		
-		gtWeek.add(dayList);
-		gtWeek.add(monthList);
-		gtWeek.add(yearList);
-		gtWeek.add(new JButton("Search"));
+		datePane.add(dayList);
+		datePane.add(monthList);
+		datePane.add(yearList);
 		
-		navPane.add(gtWeek);
-		navPane.add(new JButton("Previous Week"));
-		navPane.add(new JButton("Next Week"));
-		add(navPane,BorderLayout.NORTH);
-		
-		JTabbedPane tabbedPane = new JTabbedPane(); 
-        tabbedPane.addTab("Dentist", new Calendar());
-        tabbedPane.addTab("Hygienist", new Calendar());
-        add(tabbedPane,BorderLayout.CENTER);
-        
+		return datePane;
 	}
 	
 	

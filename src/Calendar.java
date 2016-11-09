@@ -1,11 +1,14 @@
 import java.awt.*;
+import java.sql.ResultSet;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 
+@SuppressWarnings("serial")
 public class Calendar extends JPanel {
-	public Calendar() {
-		setLayout(new GridLayout(1, 1));
+	public Calendar(){//ResultSet appointments) {
+		setLayout(new BorderLayout());
 		String[] columnNames = {"Hour","Monday", "Tuesday", "Wendesday",
                 "Thursday", "Friday", "Saturday", "Sunday"};
 		
@@ -30,10 +33,28 @@ public class Calendar extends JPanel {
 		table.setDefaultRenderer(Object.class, new AppointmentRender());
 		
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane);
+        add(scrollPane,BorderLayout.CENTER);
+        
+        
+        
+        JPanel dateInput = new JPanel(new FlowLayout());
+        dateInput.add(new JLabel("Insert date(Day-Month-Year): "));
+        dateInput.add(new JTextField(2));
+        dateInput.add(new JTextField(2));
+        dateInput.add(new JTextField(2));
+        
+        JPanel bookPane = new JPanel(new GridLayout(2,2));
+        JLabel memberlbl = new JLabel("Member ID:");
+        memberlbl.setHorizontalAlignment(JLabel.CENTER);
+        bookPane.add(memberlbl);
+        bookPane.add(new JTextField());
+        bookPane.add(dateInput);
+        bookPane.add(new JButton("Book appointment"));
+        add(bookPane,BorderLayout.SOUTH);
+        
 	}
 	
-	//class for coloring appointments
+	//class for colouring appointments
 	class AppointmentRender extends DefaultTableCellRenderer  {
 		@Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,

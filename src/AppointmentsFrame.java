@@ -2,10 +2,11 @@ import java.awt.Container;
 
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class AppointmentsFrame extends JFrame {
 	public AppointmentsFrame() {
 		setTitle("Calendar");
-		setSize(500,300);
+		setSize(750,500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
