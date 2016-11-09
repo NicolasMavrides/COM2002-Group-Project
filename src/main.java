@@ -8,5 +8,9 @@ public class Main extends JFrame {
 		IndexPage Startup = new IndexPage();
 		Startup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Startup.setVisible(true);
+		
+		RegisterPatient regPatient = new RegisterPatient();
+		regPatient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		regPatient.setVisible(true);
 	}
 }
