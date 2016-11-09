@@ -1,12 +1,11 @@
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
 
 public class RegisterPatient extends JFrame {
 	//labels
@@ -36,39 +35,42 @@ public class RegisterPatient extends JFrame {
 	//Jbutton
 	private JButton submit;
 	
-	//Constructor for patient registration form
+	//Constructor for the main page GUI
 	public RegisterPatient() {
 		super("Register Patient");
-		setLayout(new GridLayout(5,2));
-		setSize(800,150);
-		//setResizable(false);
-		
-		//initialise labels
-		JLabel name = new JLabel("Name: ");
-		JLabel surname = new JLabel("Surname: ");
-		JLabel dob = new JLabel("Date of birth: ");
-		JLabel phoneNum = new JLabel("Contact number: ");
-		JLabel houseNum = new JLabel("House no.: ");
-		JLabel street = new JLabel("Street name: ");
-		JLabel district = new JLabel("District: ");
-		JLabel city = new JLabel("City: ");
-		JLabel postCode = new JLabel("Post code: ");
-		
-		//initialise text fields
-		JTextField namef = new JTextField();
-		JTextField surnamef = new JTextField();
-		JTextField dobf = new JTextField();
-		JTextField phoneNumf = new JTextField();
-		JTextField houseNumf = new JTextField("House no.: ");
-		JTextField streetf = new JTextField();
-		JTextField districtf = new JTextField();
-		JTextField cityf = new JTextField();
-		JTextField postCodef = new JTextField();
+		setLayout(new GridLayout(11,2));
+		setSize(500,250);
+	    setLocationRelativeTo(null);
+		setResizable(false);
+	    setVisible(true);
+	    
+	    //construct text labels/fields/button
+	    title = new JLabel("Title: ");
+	    name = new JLabel("Name: ");
+	    surname = new JLabel("Surname: ");
+	    dob = new JLabel("Date of Birth: ");
+	    phoneNum = new JLabel("Phone number: ");
+	    houseNum = new JLabel("House number: ");
+	    street = new JLabel("Street: ");
+	    district = new JLabel("District: ");
+	    city = new JLabel("City: ");
+	    postCode = new JLabel("Post code: ");
+	    
+	    titlef = new JTextField();
+	    namef = new JTextField();
+	    surnamef = new JTextField();
+	    dobf = new JTextField();
+	    phoneNumf = new JTextField();
+	    houseNumf = new JTextField();
+	    streetf = new JTextField();
+	    districtf = new JTextField();
+	    cityf = new JTextField();
+	    postCodef = new JTextField();
 
-		//initialise submit button
-		JButton submit = new JButton("Submit");
-		
-		//add labels and text fields
+	    submit = new JButton("Submit");
+	    
+		add(title);
+		add(titlef);
 		add(name);
 		add(namef);
 		add(surname);
@@ -77,6 +79,8 @@ public class RegisterPatient extends JFrame {
 		add(dobf);
 		add(phoneNum);
 		add(phoneNumf);
+		add(houseNum);
+		add(houseNumf);
 		add(street);
 		add(streetf);
 		add(district);
@@ -85,38 +89,31 @@ public class RegisterPatient extends JFrame {
 		add(cityf);
 		add(postCode);
 		add(postCodef);
-		
-		//add submit button
 		add(submit);
 		
-		//event handler object
+		//Declare new object for event handler
 		EventHandler eHandler = new EventHandler();
 		
-		//namef.addActionListener(eHandler);
-		//surnamef.addActionListener(eHandler);
-		//dobf.addActionListener(eHandler);
-		//phoneNumf.addActionListener(eHandler);
-		//houseNumf.addActionListener(eHandler);
-		//streetf.addActionListener(eHandler);
-		//districtf.addActionListener(eHandler);
-		//cityf.addActionListener(eHandler);
-		//postCodef.addActionListener(eHandler);
+		titlef.addActionListener(eHandler);
+		namef.addActionListener(eHandler);
+		surnamef.addActionListener(eHandler);
+		dobf.addActionListener(eHandler);
+		phoneNumf.addActionListener(eHandler);
+		houseNumf.addActionListener(eHandler);
+		streetf.addActionListener(eHandler);
+		districtf.addActionListener(eHandler);
+		cityf.addActionListener(eHandler);
+		postCodef.addActionListener(eHandler);
 		submit.addActionListener(eHandler);
-
 	}
 	
 	//Create class for action listener.
-		private class EventHandler implements ActionListener {
-			//action listener method
-			public void actionPerformed(ActionEvent event) {
-				System.out.println(namef);
-				if (event.getSource() == submit) {
-					System.out.println("Submitted");
-					//VIEW CALENDAR INTERFACE CODE
-				} else {
-					System.out.println("OOPS");
-					//BOOK APPOINTMENT INTERFACE CODE
-				}
+	private class EventHandler implements ActionListener {
+		//action listener method
+		public void actionPerformed(ActionEvent event) {	
+			if (event.getSource() == submit) {
+			//CODE TO GET INFO FROM TEXT FIELDS AND PUT INTO DB WHEN SUBMIT BUTTON IS PRESSED.
 			}
 		}
+	}
 }

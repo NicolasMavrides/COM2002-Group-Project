@@ -23,7 +23,7 @@ public class IndexPage extends JFrame {
 		setResizable(false);
 	    setLocationRelativeTo(null);
 	    
-	    //initialise buttons and their labels
+	    //construct buttons and their labels
 		viewCalendar = new JButton("View Calendar");
 		bookAptmt = new JButton("Book Appointment");
 		subHealthPlan = new JButton("Subscribe Patient to Health Plan");

@@ -16,7 +16,8 @@ public class AppointmentsFrame extends JFrame {
 	
 	
 	public static void main(String[] args) {
-		new AppointmentsFrame();
-		new BookAppointment();
+		//new AppointmentsFrame(); --calendar 
+		//new BookAppointment(); -- book appointments gui
+		new RegisterPatient();
 	}
 }
