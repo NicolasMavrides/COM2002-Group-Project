@@ -42,7 +42,6 @@ public class RegisterPatient extends JFrame {
 		setSize(500,250);
 	    setLocationRelativeTo(null);
 		setResizable(false);
-	    setVisible(true);
 	    
 	    //construct text labels/fields/button
 	    title = new JLabel("Title: ");
@@ -105,6 +104,8 @@ public class RegisterPatient extends JFrame {
 		cityf.addActionListener(eHandler);
 		postCodef.addActionListener(eHandler);
 		submit.addActionListener(eHandler);
+	    setVisible(true);
+
 	}
 	
 	//Create class for action listener.
