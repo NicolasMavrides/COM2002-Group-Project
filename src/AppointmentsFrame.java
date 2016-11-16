@@ -17,6 +17,6 @@ public class AppointmentsFrame extends JFrame {
 	
 	public static void main(String[] args) {
 		new AppointmentsFrame();
-		new BookAppointment();
+		//new BookAppointment();
 	}
 }
