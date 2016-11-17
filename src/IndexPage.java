@@ -36,7 +36,7 @@ public class IndexPage extends JFrame {
 		add(subHealthPlan);
 		add(reviewTreatmt);
 		add(recordPaymt);
-		-
+		
 		//Declare new object for event handler
 		EventHandler eHandler = new EventHandler();
 		//add action listeners to buttons
