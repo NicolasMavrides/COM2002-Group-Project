@@ -29,6 +29,7 @@ public class IndexPage extends JFrame {
 		subHealthPlan = new JButton("Subscribe Patient to Health Plan");
 		reviewTreatmt = new JButton("Review Patient Treatments");
 		recordPaymt = new JButton("Record Patient Payment");
+		//TODO: add register patient button
 		
 		//add buttons
 		add(viewCalendar);
@@ -45,7 +46,7 @@ public class IndexPage extends JFrame {
 		subHealthPlan.addActionListener(eHandler);
 		reviewTreatmt.addActionListener(eHandler);
 		recordPaymt.addActionListener(eHandler);
-		
+		setVisible(true);
 	}
 	//Create class for action listener.
 	private class EventHandler implements ActionListener {
@@ -63,5 +64,8 @@ public class IndexPage extends JFrame {
 				//RECORD PAYMENT INTERFACE CODE
 			}
 		}
+	}
+	public static void main(String[] args) {
+		new IndexPage();
 	}
 }
