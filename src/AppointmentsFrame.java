@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.*;
 
@@ -11,7 +14,7 @@ public class AppointmentsFrame extends JFrame {
 	
 	public AppointmentsFrame(String date) {
 		setTitle("Calendar");
-		setSize(1000,500);
+		setSize(1250,500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		contentPane = getContentPane();
@@ -67,13 +70,20 @@ public class AppointmentsFrame extends JFrame {
 			}
 		});
 		
+		JButton prevWeek = new JButton("Previous Week");
+		JButton nextWeek = new JButton("Next Week");
+		
+		prevWeek.addActionListener(new weekChangeListener(-1));
+		nextWeek.addActionListener(new weekChangeListener(1));
+		
 		JPanel navPane = new JPanel(new FlowLayout());
 		navPane.add(datePane);
-		navPane.add(new JButton("Previous Week"));
-		navPane.add(new JButton("Next Week"));
+		navPane.add(prevWeek);
+		navPane.add(nextWeek);
 		
 		return navPane;
 	}
+	
 	
 	private void refreshCalendar(String date) {
 		contentPane.remove(tap);
@@ -86,10 +96,10 @@ public class AppointmentsFrame extends JFrame {
 	}
 	
 	private class TabbedAppointmentsPane extends JPanel {	
-		
+		String date;
 		public TabbedAppointmentsPane(String date) {
 			super(new BorderLayout());
-			
+			this.date = date;
 			JTabbedPane tabbedPane = new JTabbedPane();
 			
 	        tabbedPane.addTab("Dentist", new CalendarPane(Partner.DENTIST,date));
@@ -97,6 +107,33 @@ public class AppointmentsFrame extends JFrame {
 	        
 	        add(tabbedPane);
 	        
+		}
+		
+		public String getDate() {return date;}
+		
+	}
+	
+	private class weekChangeListener implements ActionListener {
+		private int direction; // -1 or 1 for previous and next week
+		
+		public weekChangeListener(int d) {
+			direction = d;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			String date = tap.getDate();
+			Calendar c = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				c.setTime(sdf.parse(date));
+			} catch (ParseException pe) {
+				pe.printStackTrace();
+			}
+			c.add(Calendar.DATE, direction*7);
+			
+			String newDate = sdf.format(c.getTime());
+			refreshCalendar(newDate);
+			
 		}
 		
 	}
