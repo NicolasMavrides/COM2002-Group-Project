@@ -1,8 +1,9 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -27,10 +28,15 @@ public class CalendarPane extends JPanel {
 		
 		//----------------------------------------------------------------------
 		//find appointments
-		String[] week = getWeek(date);
 		
-		DBConnector dbc = new DBConnector();
+		String[] week = DateProcessor.getWeek(date);
+		
+		QueryProcessor dbc = new QueryProcessor();
 		for (int i=0;i<7;i++) {
+			//show date on column names
+			String[] splitDate = week[i].split("-");
+			columnNames[i+1] += " " + splitDate[2] + "/" + splitDate[1];
+			
 			
 			ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 			if (partner == Partner.DENTIST) {
@@ -60,7 +66,7 @@ public class CalendarPane extends JPanel {
 				}
 			}
 		}
-		dbc.close();
+		//dbc.close();
 		//-----------------------------------------------------
 		//draw components
 		final JTable table = new JTable(data, columnNames);
@@ -68,63 +74,88 @@ public class CalendarPane extends JPanel {
 		table.setDefaultRenderer(Object.class, new AppointmentRender());
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane,BorderLayout.CENTER);
-        
-        
-        JComboBox<String> hourList = new JComboBox<String>();
-		for (int i=9;i<=17;i++)
-			hourList.addItem(String.format("%02d", i));
-		
-		JComboBox<String> minList = new JComboBox<String>();
-		for (int i=0;i<=40;i+=20)
-			minList.addItem(String.format("%02d", i));
+
         
         JPanel dateInput = new JPanel(new FlowLayout());
-        dateInput.add(new JLabel("Date(YY-MM-DD) and Time(HH:MM):"));
-        dateInput.add(new JTextField(2));
+        dateInput.add(new JLabel("Date(YYYY-MM-DD) and times:"));
+        dateInput.add(new JTextField(4));
         dateInput.add(new JLabel("-"));
         dateInput.add(new JTextField(2));
         dateInput.add(new JLabel("-"));
         dateInput.add(new JTextField(2));
-        dateInput.add(hourList);
-        dateInput.add(minList);
+        //dateInput.add(hourList);
+        //dateInput.add(minList);
+        dateInput.add(createTimeList(9,17,1));
+        dateInput.add(createTimeList(0,40,20));
+        dateInput.add(new JLabel("to"));
+        dateInput.add(createTimeList(9,17,1));
+        dateInput.add(createTimeList(0,40,20));
         
+        JButton bookButton = new JButton("Book appointment");
         JPanel bookPane = new JPanel(new GridLayout(2,2));
         JLabel memberlbl = new JLabel("Member ID:");
         memberlbl.setHorizontalAlignment(JLabel.CENTER);
         bookPane.add(memberlbl);
         bookPane.add(new JTextField());
         bookPane.add(dateInput);
-        bookPane.add(new JButton("Book appointment"));
+        bookPane.add(bookButton);
+        
+        bookButton.addActionListener(new ActionListener() {
+        	@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				
+				JTextField yearInput = (JTextField)dateInput.getComponent(1);
+				JTextField monthInput = (JTextField)dateInput.getComponent(3);
+				JTextField dayInput = (JTextField)dateInput.getComponent(5);
+				JComboBox<String> startHInput = (JComboBox<String>)dateInput.getComponent(6);
+				JComboBox<String> startMInput = (JComboBox<String>)dateInput.getComponent(7);
+				JComboBox<String> endHInput = (JComboBox<String>)dateInput.getComponent(9);
+				JComboBox<String> endMInput = (JComboBox<String>)dateInput.getComponent(10);
+				JTextField memberIdInput = (JTextField)bookPane.getComponent(1);
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				sdf.setLenient(false);
+				
+				try {
+					int year = Integer.valueOf(yearInput.getText());
+					int month = Integer.valueOf(monthInput.getText());
+					int day = Integer.valueOf(dayInput.getText());
+					int id = Integer.valueOf(memberIdInput.getText());
+					
+					String startTime = startHInput.getSelectedItem().toString() + ':' +startMInput.getSelectedItem().toString();
+					String endTime = endHInput.getSelectedItem().toString() + ':' + endMInput.getSelectedItem().toString();
+					String bookDate = DateProcessor.formatDate(year, month, day);
+					
+					
+					sdf.parse(bookDate); //validate date
+					//validate appointment (start>end and not finishing after 17:00)
+					if ((startTime.compareTo(endTime)>=0) || (endTime.compareTo("17:00")>0)) {
+						throw new AppointmentException("Invalid time.");
+					}
+					
+					
+					System.out.println("Booking..");
+					dbc.bookAppointment(partner, bookDate, startTime, endTime, id);
+					System.out.println("Succesful booking!");
+					
+				}
+				catch (NumberFormatException nfe) {
+					System.out.println("Invalid date or member Id");
+				}
+				catch (ParseException pe) {
+					System.out.println("Date doesn't exist");
+				}
+				catch (AppointmentException te) {
+					System.out.println(te.getType());
+				}
+				
+				
+				
+			}
+        });
+        
         add(bookPane,BorderLayout.SOUTH);
         
-	}
-	
-	private String[] getWeek(String date){
-		
-		Calendar c = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			c.setTime(sdf.parse(date));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		int dayofweek = c.get(Calendar.DAY_OF_WEEK);
-		String[] idates = new String[7]; //the dates of the week interested
-		
-		//find date of sunday
-		if (dayofweek!=1) {
-			c.add(Calendar.DATE, (8-dayofweek));
-		}
-		idates[6] = sdf.format(c.getTime());
-		
-		//find other dates
-		for (int i=5;i>=0;i--) {
-			c.add(Calendar.DATE, -1);
-			idates[i] = sdf.format(c.getTime());
-		}
-		
-		return idates;
 	}
 	
 	//class for colouring appointments
@@ -142,6 +173,21 @@ public class CalendarPane extends JPanel {
 			  return l;
         }
     }
+	
+	private static JComboBox<String> createTimeList(int start,int end,int inc) {
+		JComboBox<String> cb = new JComboBox<String>();
+		for (int i=start;i<=end;i+=inc)
+			cb.addItem(String.format("%02d", i));
+		return cb;
+	}
+	
+	static class AppointmentException extends Exception {
+		String exeptionType;
+		AppointmentException(String s) {
+			exeptionType = s;
+		}
+		String getType() {return exeptionType;}
+	}
 	
 }
 
