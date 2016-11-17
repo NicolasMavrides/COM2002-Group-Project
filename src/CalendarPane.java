@@ -174,6 +174,7 @@ public class CalendarPane extends JPanel {
         }
     }
 	
+
 	private static JComboBox<String> createTimeList(int start,int end,int inc) {
 		JComboBox<String> cb = new JComboBox<String>();
 		for (int i=start;i<=end;i+=inc)
@@ -190,5 +191,3 @@ public class CalendarPane extends JPanel {
 	}
 	
 }
-
-
