@@ -10,6 +10,10 @@ public class DateProcessor {
 		return sdf.format(c.getTime());
 	}
 	
+	public static int currentYear() {
+		return Integer.valueOf(today().substring(0, 4));
+	}
+	
 	//convert to yyyy-mm-dd
 	public static String formatDate(int year, int month, int day) {
 		return String.format("%04d", year) + '-' + String.format("%02d", month) + '-' + String.format("%02d", day);

@@ -55,7 +55,7 @@ public class IndexPage extends JFrame {
 		//action listener method
 		public void actionPerformed(ActionEvent event) {	
 			if (event.getSource() == viewCalendar) {
-				new AppointmentsFrame(DateProcessor.today());
+				new AppointmentsFrame();
 			} else if (event.getSource() == bookAptmt) {
 				//BOOK APPOINTMENT INTERFACE CODE
 			} else if (event.getSource() == subHealthPlan) {

@@ -1,19 +1,10 @@
 import java.sql.*;
 import java.util.ArrayList;
 
-public class AppointmentQueryProcessor {
-	private Connection con;
-	public AppointmentQueryProcessor() {
-		con = null; 
-		try {
-		 con = DriverManager.getConnection("jdbc:mysql://stusql.dcs.shef.ac.uk/team029", "team029", "75780669"); 
-		}
-		catch (SQLException ex) {
-		 ex.printStackTrace();
-		}
-	}
+public class AppointmentQueryProcessor extends QueryProcessor {
+	public AppointmentQueryProcessor() { super(); }
 	
-	public void bookAppointment(Partner p, String date,String startTime, String endTime, int id) throws CalendarPane.AppointmentException {
+	public void bookAppointment(Partner p, String date,String startTime, String endTime, int id) throws AppointmentsFrame.AppointmentException {
 		String partner = (p==Partner.DENTIST) ? "Dentist": "Hygienist";
 		try {
 			Statement stmt = con.createStatement(); 
@@ -22,7 +13,7 @@ public class AppointmentQueryProcessor {
 			ResultSet res = stmt.executeQuery("SELECT COUNT(*) FROM Patient WHERE Patient_ID = "+ id);
 			res.next();
 			if (res.getInt(1)==0) {
-				throw new CalendarPane.AppointmentException("No such patient.");
+				throw new AppointmentsFrame.AppointmentException("No such patient.");
 			}
 			
 			//ensure there are no conflicting appointments
@@ -32,13 +23,13 @@ public class AppointmentQueryProcessor {
 				String et = res.getString(2);
 
 				if ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0)) {
-					throw new CalendarPane.AppointmentException("Conflicting with other appointments");
+					throw new AppointmentsFrame.AppointmentException("Conflicting with other appointments");
 				}
 			}
 			stmt.executeUpdate("INSERT INTO Appointment (Partner, Date, Start_Time, End_Time, Cost, Patient_ID) "
 							+"VALUES ('" + partner + "','" + date.substring(2) + "','" + startTime + "', '" + endTime + "', '0', '" + id + "')");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}
@@ -91,15 +82,16 @@ public class AppointmentQueryProcessor {
 		return null;
 	}
 	
-	public void cancelAppointment(Partner p, String date, String startTime) { 
+	public int cancelAppointment(Partner p, String date, String startTime) { 
 		try {
 			Statement stmt = con.createStatement();
 			String partner = (p==Partner.DENTIST)? "Dentist" : "Hygienist";
 			String query = "DELETE FROM Appointment WHERE Partner = '" + partner + "' AND Date ='" +date.substring(2)
 					+ "' AND Start_Time = '" + startTime + "'";
-			stmt.executeUpdate(query);
+			return stmt.executeUpdate(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 0;
 		}
 	}
 	
@@ -110,20 +102,5 @@ public class AppointmentQueryProcessor {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args) {
-		/*String start[] = {"11:00","11:40","10:00","12:20","11:00","12:00","11:20","11:40"};
-		String end[] =   {"11:40","12:20","11:00","13:00","11:20","12:20","11:40","12:00"};
-		String startTime = "11:20";
-		String endTime = "12:00";
-		for (int i =0;i<start.length;i++) {
-			String st = start[i];
-			String et = end[i];
-			System.out.println(st + '-' + et +':' + ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0)));
-			if ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0)) {
-				
-			}
-		}*/
-		
-	}
+
 }
