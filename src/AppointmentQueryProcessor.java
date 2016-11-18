@@ -17,15 +17,27 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			}
 			
 			//ensure there are no conflicting appointments
-			res = stmt.executeQuery("SELECT Start_Time,End_Time FROM Appointment WHERE Date = '"+date.substring(2)+'\'');
+			res = stmt.executeQuery("SELECT Start_Time,End_Time FROM Appointment WHERE Date = '"+date.substring(2)+"' AND Patient_ID = " + id);
 			while (res.next()) {
 				String st = res.getString(1);
 				String et = res.getString(2);
-
+				
 				if ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0)) {
-					throw new AppointmentsFrame.AppointmentException("Conflicting with other appointments");
+					throw new AppointmentsFrame.AppointmentException("Conflicting with other personal appointments.");
 				}
 			}
+			
+			//ensure partner is available
+			res = stmt.executeQuery("SELECT Start_Time,End_Time FROM Appointment WHERE Date = '"+date.substring(2)+"' AND Partner = '" +partner+ "'");
+			while (res.next()) {
+				String st = res.getString(1);
+				String et = res.getString(2);
+				
+				if ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0)) {
+					throw new AppointmentsFrame.AppointmentException(partner+" is not available at that time.");
+				}
+			}
+			
 			stmt.executeUpdate("INSERT INTO Appointment (Partner, Date, Start_Time, End_Time, Cost, Patient_ID) "
 							+"VALUES ('" + partner + "','" + date.substring(2) + "','" + startTime + "', '" + endTime + "', '0', '" + id + "')");
 		} catch (SQLException e) {
