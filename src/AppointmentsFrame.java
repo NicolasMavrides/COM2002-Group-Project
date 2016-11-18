@@ -271,14 +271,62 @@ public class AppointmentsFrame extends JFrame {
 				
 			}
 		});
-
+		JButton holidayButton = new JButton("Book Holiday");
 		JPanel holidayPane = new JPanel(new FlowLayout());
 		holidayPane.add(new JLabel("From: "));
 		holidayPane.add(new DatePane(CURRENT_YEAR, CURRENT_YEAR+5, TODAY));
 		holidayPane.add(new JLabel("To: "));
 		holidayPane.add(new DatePane(CURRENT_YEAR, CURRENT_YEAR+5, TODAY));
-		holidayPane.add(new JButton("Book Holiday"));
+		holidayPane.add(holidayButton);
 		holidayPane.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+		
+		holidayButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String startDate = ((DatePane)holidayPane.getComponent(1)).getDate();
+				String endDate = ((DatePane)holidayPane.getComponent(3)).getDate();
+				
+				try {
+					validateDate(startDate);
+					validateDate(endDate);
+					
+					AppointmentQueryProcessor qp = new AppointmentQueryProcessor();
+					qp.bookHoliday(tap.getPartner(), startDate, endDate);
+					qp.close();
+					refreshCalendar(startDate);
+					
+					
+				} catch (ParseException e1) {
+					JOptionPane.showMessageDialog(null, "Date doesn't exist.", null, JOptionPane.ERROR_MESSAGE);
+				} catch (AppointmentException ex) {
+					JOptionPane.showMessageDialog(null, ex.getType(), null, JOptionPane.ERROR_MESSAGE);
+				}
+				
+				
+				/*try {
+					//validateDate(date);
+					TimePane tp = (TimePane)cancelAppointmentPane.getComponent(2);
+					String startTime = tp.getTime();
+					
+					AppointmentQueryProcessor qp = new AppointmentQueryProcessor();
+					int cancelResult = qp.cancelAppointment(tap.getPartner(), date, startTime);
+					qp.close();
+					
+					if (cancelResult ==0) {
+						JOptionPane.showMessageDialog(null, "There are no appointments at that time.", null, JOptionPane.ERROR_MESSAGE);
+					}
+					else {
+						//refreshCalendar(date);
+					}
+					
+				}
+				catch (ParseException pe) {
+					JOptionPane.showMessageDialog(null, "Date doesn't exist.", null, JOptionPane.ERROR_MESSAGE);
+				}*/
+				
+				
+			}
+		});
 		
         bookPane.add(cancelAppointmentPane);
         bookPane.add(holidayPane);
