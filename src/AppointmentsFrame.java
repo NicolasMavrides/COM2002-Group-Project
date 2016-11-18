@@ -15,7 +15,7 @@ public class AppointmentsFrame extends JFrame {
 	public AppointmentsFrame(String date) {
 		setTitle("Calendar");
 		setSize(1250,500);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
@@ -29,44 +29,18 @@ public class AppointmentsFrame extends JFrame {
 	}
 	
 	private JPanel createNavPane() {
-		JPanel datePane = new JPanel(new FlowLayout());
-		datePane.add(new JLabel("Go to:"));		
-		
-		//day
-		JComboBox<Integer> dayList = new JComboBox<Integer>();
-		for (int i=1;i<=31;i++)
-			dayList.addItem(i);
-		
-		//month
-		String[] months = {"January","February","March","April","May","June","July",
-							"August","September","October","November","December"};
-		JComboBox<String> monthList = new JComboBox<String>();
-		for (String month:months)
-			monthList.addItem(month);
-		
-		//year
-		JComboBox<Integer> yearList = new JComboBox<Integer>();
-		for (int i=2016;i>=1996;i--) //TODO add min and max year
-			yearList.addItem(i);
-		
-		datePane.add(dayList);
-		datePane.add(monthList);
-		datePane.add(yearList);
+		JPanel dateSearchPane = new JPanel(new FlowLayout());
+		dateSearchPane.add(new JLabel("Go to:"));		
+		dateSearchPane.add(new DatePane(1990,2016));
 		
 		JButton searchButton = new JButton("Search");
-		datePane.add(searchButton);
+		dateSearchPane.add(searchButton);
 		
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				int day = (int)dayList.getSelectedItem();
-				int year = (int)yearList.getSelectedItem();
-				int month = monthList.getSelectedIndex() + 1;	
-				
-				String newDate = year + "-" + String.format("%02d", month) + "-" + String.format("%02d", day);
-				
+				DatePane dp = (DatePane)dateSearchPane.getComponents()[1]; 
+				String newDate = DateProcessor.formatDate(dp.getYear(),dp.getMonth(),dp.getDay());
 				refreshCalendar(newDate);
-				
 			}
 		});
 		
@@ -76,10 +50,85 @@ public class AppointmentsFrame extends JFrame {
 		prevWeek.addActionListener(new weekChangeListener(-1));
 		nextWeek.addActionListener(new weekChangeListener(1));
 		
-		JPanel navPane = new JPanel(new FlowLayout());
-		navPane.add(datePane);
-		navPane.add(prevWeek);
-		navPane.add(nextWeek);
+		
+		
+		JButton findAppointmentButton = new JButton("Find Appointment");
+		JPanel searchAppointmentPane = new JPanel(new FlowLayout());
+		searchAppointmentPane.add(new JLabel("Enter member id to find upcoming appointment:"));
+		searchAppointmentPane.add(new JTextField(2));
+		searchAppointmentPane.add(findAppointmentButton);
+		
+		
+		findAppointmentButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AppointmentQueryProcessor qp = new AppointmentQueryProcessor();
+				JTabbedPane jtb = (JTabbedPane)tap.getComponent(0);
+				
+				JTextField idInput = (JTextField)searchAppointmentPane.getComponent(1);
+				
+				int id = Integer.valueOf(idInput.getText());
+				
+				Partner partner = (jtb.getSelectedIndex()==0)? Partner.DENTIST : Partner.HYGIENIST;
+				String appointmentDate = qp.findNextAppointment(partner, id);
+				if (appointmentDate==null) {
+					System.out.println("No appointments found");
+				}
+				else {
+					refreshCalendar(20+appointmentDate);
+				}
+				qp.close();
+				//System.out.println(qp.findAppointment(partner, id));
+			}
+		});
+		
+		JButton cancelButton = new JButton("Cancel");
+		
+		JPanel cancelAppointmentPane = new JPanel(new FlowLayout());
+		cancelAppointmentPane.add(new JLabel("Cancel appointment on: "));
+		cancelAppointmentPane.add(new DatePane(1990,2016));
+		cancelAppointmentPane.add(CalendarPane.createTimeList(9,17,1));
+		cancelAppointmentPane.add(CalendarPane.createTimeList(0,40,20));
+		cancelAppointmentPane.add(cancelButton);
+		
+		cancelButton.addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				
+				JTabbedPane jtb = (JTabbedPane)tap.getComponent(0);
+				Partner partner = (jtb.getSelectedIndex()==0)? Partner.DENTIST : Partner.HYGIENIST;
+				
+				String date = ((DatePane)cancelAppointmentPane.getComponent(1)).getDate();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				sdf.setLenient(false);
+				
+				try {
+					sdf.parse(date);
+				}
+				catch (ParseException pe) {
+					System.out.println("Date doesn't exist");
+				}
+				
+				String startTime = ((JComboBox<String>)cancelAppointmentPane.getComponent(2)).getSelectedItem().toString();
+				startTime += ":"+((JComboBox<String>)cancelAppointmentPane.getComponent(3)).getSelectedItem().toString();
+				
+				System.out.println(date+startTime);
+				AppointmentQueryProcessor qp = new AppointmentQueryProcessor();
+				qp.cancelAppointment(partner, date, startTime);
+				qp.close();
+				refreshCalendar(date);
+			}
+		});
+		
+		JPanel navPane = new JPanel(new GridLayout(0,1));
+		JPanel weekNavPane = new JPanel(new FlowLayout());
+		
+		weekNavPane.add(dateSearchPane);
+		weekNavPane.add(prevWeek);
+		weekNavPane.add(nextWeek);
+		navPane.add(weekNavPane);
+		
+		navPane.add(searchAppointmentPane);
+		navPane.add(cancelAppointmentPane);
 		
 		return navPane;
 	}
@@ -93,6 +142,7 @@ public class AppointmentsFrame extends JFrame {
 		contentPane.add(tap);
 		contentPane.revalidate(); 
 		repaint();
+		
 	}
 	
 	private class TabbedAppointmentsPane extends JPanel {	
@@ -138,9 +188,44 @@ public class AppointmentsFrame extends JFrame {
 		
 	}
 	
+	private class DatePane extends JPanel {
+		private JComboBox<Integer> dayList;
+		private JComboBox<String> monthList;
+		private JComboBox<Integer> yearList;
+		private DatePane(int yStart,int yEnd) {
+			
+			super(new FlowLayout());		
+			//day
+			dayList = new JComboBox<Integer>();
+			for (int i=1;i<=31;i++)
+				dayList.addItem(i);
+			
+			//month
+			String[] months = {"January","February","March","April","May","June","July",
+								"August","September","October","November","December"};
+			monthList = new JComboBox<String>();
+			for (String month:months)
+				monthList.addItem(month);
+			
+			//year
+			yearList = new JComboBox<Integer>();
+			for (int i=yEnd;i>=yStart;i--) //TODO add min and max year
+				yearList.addItem(i);
+			
+			add(dayList);
+			add(monthList);
+			add(yearList);
+		}
+		
+		private int getDay() {return (int)dayList.getSelectedItem();}
+		private int getMonth() {return monthList.getSelectedIndex() + 1;}
+		private int getYear() {return (int)yearList.getSelectedItem();}
+		private String getDate() {return (String.valueOf(getYear()) + '-' + String.valueOf(getMonth()) + '-' + String.valueOf(getDay()));}
+	}
+	
 	
 	public static void main(String[] args) {
-		new AppointmentsFrame("2016-12-14");
+		new AppointmentsFrame(DateProcessor.today());
 		
 	}
 }

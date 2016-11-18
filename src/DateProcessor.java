@@ -4,6 +4,12 @@ import java.util.Calendar;
 
 public class DateProcessor {
 	
+	public static String today() {
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(c.getTime());
+	}
+	
 	//convert to yyyy-mm-dd
 	public static String formatDate(int year, int month, int day) {
 		return String.format("%04d", year) + '-' + String.format("%02d", month) + '-' + String.format("%02d", day);

@@ -2,6 +2,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -53,11 +55,11 @@ public class IndexPage extends JFrame {
 		//action listener method
 		public void actionPerformed(ActionEvent event) {	
 			if (event.getSource() == viewCalendar) {
-				//VIEW CALENDAR INTERFACE CODE
+				new AppointmentsFrame(DateProcessor.today());
 			} else if (event.getSource() == bookAptmt) {
 				//BOOK APPOINTMENT INTERFACE CODE
 			} else if (event.getSource() == subHealthPlan) {
-				//SUBSCRIBE HEALTH PLAN INTERFACE CODE
+				new HealthCarePlan();
 			} else if (event.getSource() == reviewTreatmt) {
 				//REVIEW TREATMENT INTERFACE CODE
 			} else {

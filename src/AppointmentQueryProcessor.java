@@ -1,9 +1,9 @@
 import java.sql.*;
 import java.util.ArrayList;
 
-public class QueryProcessor {
+public class AppointmentQueryProcessor {
 	private Connection con;
-	public QueryProcessor() {
+	public AppointmentQueryProcessor() {
 		con = null; 
 		try {
 		 con = DriverManager.getConnection("jdbc:mysql://stusql.dcs.shef.ac.uk/team029", "team029", "75780669"); 
@@ -68,6 +68,39 @@ public class QueryProcessor {
 			return null;
 		}
 	
+	}
+	
+	public String findNextAppointment(Partner p, int id) {
+		String partner = (p==Partner.DENTIST)? "Dentist" : "Hygienist";
+		try {
+			Statement stmt = con.createStatement();
+			String query = "SELECT Date FROM Appointment WHERE Partner = '"+partner+"' AND Patient_Id = " + id +" ORDER BY Date";
+			ResultSet res = stmt.executeQuery(query);
+			
+			String today = DateProcessor.today().substring(2);
+			while (res.next()) {
+				String date = res.getString(1);
+				if (date.compareTo(today)>=0) {
+					return date;
+				}
+			}
+			return null;//res.getString(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void cancelAppointment(Partner p, String date, String startTime) { 
+		try {
+			Statement stmt = con.createStatement();
+			String partner = (p==Partner.DENTIST)? "Dentist" : "Hygienist";
+			String query = "DELETE FROM Appointment WHERE Partner = '" + partner + "' AND Date ='" +date.substring(2)
+					+ "' AND Start_Time = '" + startTime + "'";
+			stmt.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void close() {
