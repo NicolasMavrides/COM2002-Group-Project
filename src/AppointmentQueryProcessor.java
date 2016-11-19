@@ -7,17 +7,15 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 	public void bookAppointment(Partner p, String date,String startTime, String endTime, int id) throws AppointmentsFrame.AppointmentException {
 		String partner = (p==Partner.DENTIST) ? "Dentist": "Hygienist";
 		try {
-			Statement stmt = con.createStatement(); 
-
-			//check if patient exists
-			ResultSet res = stmt.executeQuery("SELECT COUNT(*) FROM Patient WHERE Patient_ID = "+ id);
-			res.next();
-			if (res.getInt(1)==0) {
+			
+			if (!memberExists(id)) {
 				throw new AppointmentsFrame.AppointmentException("No such patient.");
 			}
 			
+			Statement stmt = con.createStatement(); 
+			
 			//ensure there are no conflicting appointments
-			res = stmt.executeQuery("SELECT Start_Time,End_Time FROM Appointment WHERE Date = '"+date.substring(2)+"' AND Patient_ID = " + id);
+			ResultSet res = stmt.executeQuery("SELECT Start_Time,End_Time FROM Appointment WHERE Date = '"+date+"' AND Patient_ID = " + id);
 			while (res.next()) {
 				String st = res.getString(1);
 				String et = res.getString(2);
@@ -28,7 +26,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			}
 			
 			//ensure partner is available
-			res = stmt.executeQuery("SELECT Start_Time,End_Time FROM Appointment WHERE Date = '"+date.substring(2)+"' AND Partner = '" +partner+ "'");
+			res = stmt.executeQuery("SELECT Start_Time,End_Time FROM Appointment WHERE Date = '"+date+"' AND Partner = '" +partner+ "'");
 			while (res.next()) {
 				String st = res.getString(1);
 				String et = res.getString(2);
@@ -39,7 +37,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			}
 			
 			stmt.executeUpdate("INSERT INTO Appointment (Partner, Date, Start_Time, End_Time, Cost, Patient_ID) "
-							+"VALUES ('" + partner + "','" + date.substring(2) + "','" + startTime + "', '" + endTime + "', '0', '" + id + "')");
+							+"VALUES ('" + partner + "','" + date + "','" + startTime + "', '" + endTime + "', '0', '" + id + "')");
 		} catch (SQLException e) {
 			
 			e.printStackTrace();
@@ -51,7 +49,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			Statement stmt = con.createStatement();
 			String partner = (p == Partner.DENTIST) ? "Dentist" : "Hygienist";
 			String query = "SELECT Start_Time,End_Time,Title,Forename,Surname,ap.Patient_Id FROM Appointment ap,Patient pt "
-							+ "WHERE ap.Patient_Id=pt.Patient_Id AND Date='" + date.substring(2) 
+							+ "WHERE ap.Patient_Id=pt.Patient_Id AND Date='" + date
 							+ "' AND partner = '" + partner + "'";
 			ResultSet res = stmt.executeQuery(query);
 			
@@ -74,6 +72,24 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 	
 	}
 	
+	/*public ArrayList<Appointment> getUnpaidAppointments(int id) {
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet res = stmt.executeQuery("SELECT * FROM Appointment WHERE Patient_Id = " + id);
+			
+			ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+			while (res.next()) {
+				int cost = res.getInt(5);
+				if (cost!=0) {
+					appointments.add(new Appointment(startTime,endTime,name));
+				}
+				 
+			 }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}*/
+	
 	public String findNextAppointment(Partner p, int id) {
 		String partner = (p==Partner.DENTIST)? "Dentist" : "Hygienist";
 		try {
@@ -81,7 +97,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			String query = "SELECT Date FROM Appointment WHERE Partner = '"+partner+"' AND Patient_Id = " + id +" ORDER BY Date";
 			ResultSet res = stmt.executeQuery(query);
 			
-			String today = DateProcessor.today().substring(2);
+			String today = DateProcessor.today();
 			while (res.next()) {
 				String date = res.getString(1);
 				if (date.compareTo(today)>=0) {
@@ -99,7 +115,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 		try {
 			Statement stmt = con.createStatement();
 			String partner = (p==Partner.DENTIST)? "Dentist" : "Hygienist";
-			String query = "DELETE FROM Appointment WHERE Partner = '" + partner + "' AND Date ='" +date.substring(2)
+			String query = "DELETE FROM Appointment WHERE Partner = '" + partner + "' AND Date ='" +date
 					+ "' AND Start_Time = '" + startTime + "'";
 			return stmt.executeUpdate(query);
 		} catch (SQLException e) {
@@ -116,7 +132,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			Statement stmt = con.createStatement();
 			String partner = (p==Partner.DENTIST)? "Dentist" : "Hygienist";
 			for (String date:dateRange) {
-				String query = "SELECT COUNT(*) FROM Appointment WHERE Partner = '" + partner + "' AND Date ='" +date.substring(2)+ "';";
+				String query = "SELECT COUNT(*) FROM Appointment WHERE Partner = '" + partner + "' AND Date ='" +date+ "';";
 
 				ResultSet res = stmt.executeQuery(query);
 				res.next();
@@ -138,12 +154,25 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 		
 	}
 	
-	public void close() {
+	/*public void testDate() {
 		try {
-			con.close();
+			Statement stmt = con.createStatement();
+			ResultSet res = stmt.executeQuery("SELECT * FROM Test");
+			
+			for (int i=0;i<3;i++) {
+				res.next();
+				System.out.println(res.getString(1));
+				System.out.println(res.getString(2));
+				System.out.println(res.getString(3));
+			}
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}*/
+	
+	public static void main(String[] args) {
+		AppointmentQueryProcessor apq = new AppointmentQueryProcessor();
+		//apq.testDate();
 	}
-
 }

@@ -23,10 +23,11 @@ public class AppointmentsFrame extends JFrame {
 		contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());		
 
-		tap = new TabbedAppointmentsPane(TODAY);
+		tap = new TabbedAppointmentsPane(TODAY,0);
 		contentPane.add(createNavPane(),BorderLayout.NORTH);
 		contentPane.add(tap, BorderLayout.CENTER);
 		contentPane.add(createBookPane(),BorderLayout.SOUTH);
+		
 
 		setVisible(true);
 	}
@@ -91,54 +92,13 @@ public class AppointmentsFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "No appointments found.", null, JOptionPane.INFORMATION_MESSAGE);
 				}
 				else {
-					refreshCalendar(20+appointmentDate);
+					refreshCalendar(appointmentDate);
 				}
 				qp.close();
 			}
 		});
 		
-		
-		//--------------------------------------
-		//Cancelling an appointment
-		/*JButton cancelButton = new JButton("Cancel");
-		
-		JPanel cancelAppointmentPane = new JPanel(new FlowLayout());
-		cancelAppointmentPane.add(new JLabel("Cancel appointment on: "));
-		cancelAppointmentPane.add(new DatePane(CURRENT_YEAR,CURRENT_YEAR+5,TODAY));
-		cancelAppointmentPane.add(new TimePane());
-		cancelAppointmentPane.add(cancelButton);
-		
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				String date = ((DatePane)cancelAppointmentPane.getComponent(1)).getDate();
-				
-				try {
-					validateDate(date);
-					TimePane tp = (TimePane)cancelAppointmentPane.getComponent(2);
-					String startTime = tp.getTime();
-					
-					AppointmentQueryProcessor qp = new AppointmentQueryProcessor();
-					int cancelResult = qp.cancelAppointment(tap.getPartner(), date, startTime);
-					qp.close();
-					
-					if (cancelResult ==0) {
-						JOptionPane.showMessageDialog(null, "There are no appointments at that time.", null, JOptionPane.ERROR_MESSAGE);
-					}
-					else {
-						refreshCalendar(date);
-					}
-					
-				}
-				catch (ParseException pe) {
-					JOptionPane.showMessageDialog(null, "Date doesn't exist.", null, JOptionPane.ERROR_MESSAGE);
-				}
-				
-				
-			}
-		});*/
-		
-		//Add all 3 functionalities
+		//stack week search and appointment search
 		JPanel navPane = new JPanel(new GridLayout(0,1));
 		JPanel weekNavPane = new JPanel(new FlowLayout());
 		
@@ -148,7 +108,6 @@ public class AppointmentsFrame extends JFrame {
 		
 		navPane.add(weekNavPane);
 		navPane.add(searchAppointmentPane);
-		//navPane.add(cancelAppointmentPane);
 		
 		return navPane;
 	}
@@ -188,16 +147,16 @@ public class AppointmentsFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
         		
         		
-				JTextField memberIdInput = (JTextField)bookPane.getComponent(1);
+				JTextField memberIdInput = (JTextField)dateInput.getComponent(1);
 				
 				
 				
 				try {
 					int id = Integer.valueOf(memberIdInput.getText());
 					
-					DatePane dateSelPane = (DatePane)(dateInput.getComponent(1));
-					TimePane stInput = (TimePane)(dateInput.getComponent(2));
-					TimePane etInput = (TimePane)(dateInput.getComponent(4));
+					DatePane dateSelPane = (DatePane)(dateInput.getComponent(3));
+					TimePane stInput = (TimePane)(dateInput.getComponent(4));
+					TimePane etInput = (TimePane)(dateInput.getComponent(6));
 					String startTime = stInput.getTime();
 					String endTime = etInput.getTime();
 					String bookDate = dateSelPane.getDate();
@@ -303,28 +262,6 @@ public class AppointmentsFrame extends JFrame {
 				}
 				
 				
-				/*try {
-					//validateDate(date);
-					TimePane tp = (TimePane)cancelAppointmentPane.getComponent(2);
-					String startTime = tp.getTime();
-					
-					AppointmentQueryProcessor qp = new AppointmentQueryProcessor();
-					int cancelResult = qp.cancelAppointment(tap.getPartner(), date, startTime);
-					qp.close();
-					
-					if (cancelResult ==0) {
-						JOptionPane.showMessageDialog(null, "There are no appointments at that time.", null, JOptionPane.ERROR_MESSAGE);
-					}
-					else {
-						//refreshCalendar(date);
-					}
-					
-				}
-				catch (ParseException pe) {
-					JOptionPane.showMessageDialog(null, "Date doesn't exist.", null, JOptionPane.ERROR_MESSAGE);
-				}*/
-				
-				
 			}
 		});
 		
@@ -336,10 +273,12 @@ public class AppointmentsFrame extends JFrame {
 	
 	
 	private void refreshCalendar(String date) {
+		Partner selectedPartner = tap.getPartner();
 		contentPane.remove(tap);
 		contentPane.revalidate(); 
 		repaint();
-		tap = new TabbedAppointmentsPane(date);
+		tap = new TabbedAppointmentsPane(date,(selectedPartner == Partner.DENTIST)? 0 : 1);
+		
 		contentPane.add(tap);
 		contentPane.revalidate(); 
 		repaint();
@@ -358,18 +297,18 @@ public class AppointmentsFrame extends JFrame {
 	//PANELS
 	private class TabbedAppointmentsPane extends JPanel {	
 		String date;
-		private TabbedAppointmentsPane(String date) {
+		private TabbedAppointmentsPane(String date,int selected) {
 			super(new BorderLayout());
 			this.date = date;
 			JTabbedPane tabbedPane = new JTabbedPane();
 			
 	        tabbedPane.addTab("Dentist", new CalendarPane(Partner.DENTIST,date));
 	        tabbedPane.addTab("Hygienist", new CalendarPane(Partner.HYGIENIST,date));
-	        
+	        tabbedPane.setSelectedIndex(selected);
 	        add(tabbedPane);
 	        
 		}
-		
+
 		//return partner based on the selected tab
 		private Partner getPartner() {
 			JTabbedPane jtb = (JTabbedPane)this.getComponent(0);
@@ -380,12 +319,12 @@ public class AppointmentsFrame extends JFrame {
 		
 	}
 	
-	private class DatePane extends JPanel {
+	public class DatePane extends JPanel {
 		private JComboBox<Integer> dayList;
 		private JComboBox<String> monthList;
 		private JComboBox<Integer> yearList;
 		
-		private DatePane(int yStart,int yEnd, String selectedDate) {
+		public DatePane(int yStart,int yEnd, String selectedDate) {
 			
 			super(new FlowLayout());		
 			//day
@@ -416,10 +355,10 @@ public class AppointmentsFrame extends JFrame {
 		}
 		
 		
-		private int getDay() {return (int)dayList.getSelectedItem();}
-		private int getMonth() {return monthList.getSelectedIndex() + 1;}
-		private int getYear() {return (int)yearList.getSelectedItem();}
-		private String getDate() {return DateProcessor.formatDate(getYear(), getMonth(), getDay());}
+		public int getDay() {return (int)dayList.getSelectedItem();}
+		public int getMonth() {return monthList.getSelectedIndex() + 1;}
+		public int getYear() {return (int)yearList.getSelectedItem();}
+		public String getDate() {return DateProcessor.formatDate(getYear(), getMonth(), getDay());}
 	}
 	
 	private class TimePane extends JPanel {

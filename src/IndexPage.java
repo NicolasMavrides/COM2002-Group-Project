@@ -46,8 +46,33 @@ public class IndexPage extends JFrame {
 		viewCalendar.addActionListener(eHandler);
 		bookAptmt.addActionListener(eHandler);
 		subHealthPlan.addActionListener(eHandler);
-		reviewTreatmt.addActionListener(eHandler);
+		//reviewTreatmt.addActionListener(eHandler);
 		recordPaymt.addActionListener(eHandler);
+		
+		reviewTreatmt.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int id = Integer.valueOf(JOptionPane.showInputDialog("Enter member id:")); 
+					QueryProcessor qp = new QueryProcessor();
+					
+					if (!qp.memberExists(id)) {
+						throw new InputException("Member doesn't exist.");
+					}
+					qp.close();
+					new ReviewTreatmentsFrame(id);
+					
+				}
+				catch (NumberFormatException nfe) {
+					JOptionPane.showMessageDialog(null, "Invalid member ID.", null, JOptionPane.ERROR_MESSAGE);
+				}
+				catch (InputException ie) {
+					JOptionPane.showMessageDialog(null, ie.getMsg(), null, JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+			
+		});
 		setVisible(true);
 	}
 	//Create class for action listener.
@@ -59,7 +84,7 @@ public class IndexPage extends JFrame {
 			} else if (event.getSource() == bookAptmt) {
 				//BOOK APPOINTMENT INTERFACE CODE
 			} else if (event.getSource() == subHealthPlan) {
-				new HealthCarePlan();
+				new HealthCarePlanFrame();
 			} else if (event.getSource() == reviewTreatmt) {
 				//REVIEW TREATMENT INTERFACE CODE
 			} else {
@@ -67,6 +92,15 @@ public class IndexPage extends JFrame {
 			}
 		}
 	}
+	
+	private class InputException extends Exception {
+		String errorMsg;
+		InputException(String s) {
+			errorMsg = s;
+		}
+		String getMsg() {return errorMsg;}
+	}
+	
 	public static void main(String[] args) {
 		new IndexPage();
 	}
