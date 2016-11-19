@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class HealthCarePlan extends JFrame {
+public class HealthCarePlanFrame extends JFrame {
 	private JLabel patientID;
 	private JLabel planDesc;
 	private JTextField patientIDf;
@@ -21,7 +21,7 @@ public class HealthCarePlan extends JFrame {
 	private JButton subDRepair;
 	private JButton submit;
 	
-	public HealthCarePlan() {
+	public HealthCarePlanFrame() {
 		super("Subscribe Patient to Health Plan");
 		setLayout(new GridLayout(5,2));
 		setSize(400,150);
@@ -87,7 +87,7 @@ public class HealthCarePlan extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		new HealthCarePlan();
+		new HealthCarePlanFrame();
 	}
 	
 	public class HealthCareQueryProcessor extends QueryProcessor {

@@ -1,8 +1,12 @@
 import javax.swing.*;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 
@@ -35,9 +39,9 @@ public class ReviewTreatmentsFrame extends JFrame {
 		
 	    if (hcp != null) {
 	    	System.out.println(hcp.toString());
-	    	remCheckups = hcp.getRemCheckups();
-	    	remHygiene = hcp.getRemHygiene();
-	    	remRepairs = hcp.getRemRepairs();
+	    	remCheckups = hcp.getCoveredCheckups();
+	    	remHygiene = hcp.getCoveredHygiene();
+	    	remRepairs = hcp.getCoveredRepairs();
 	    }
 	    
 		
@@ -81,31 +85,98 @@ public class ReviewTreatmentsFrame extends JFrame {
 	    	
 	    }
 	    
+	    if (hcp!=null) {
+	    	hcp.setRemCheckups(remCheckups);
+		    hcp.setRemHygiene(remHygiene);
+		    hcp.setRemRepairs(remRepairs);
+	    }
+	    
+	    
+	    
 	    JTable table = new JTable(data, columnNames);
 		table.setEnabled(false);
         JScrollPane scrollPane = new JScrollPane(table);
         
+        JPanel paymentPanel = new JPanel(new FlowLayout());
+        JButton payButton = new JButton("Record Payment");
+        paymentPanel.add(new JLabel("Final Cost: " + costSum));
+        paymentPanel.add(payButton);
+        
+        payButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TreatmentQueryProcessor tqp = new TreatmentQueryProcessor();
+				tqp.recordPayment(id);
+				
+				JPanel confirmationPane = new JPanel(new GridLayout(0,1));
+				confirmationPane.add(new JLabel("Payment Recorded."));
+				if (hcp!=null) {
+					tqp.updateHealthCarePlan(id, hcp.getUsedCheckups(), hcp.getUsedHygiene(), hcp.getCoveredRepairs());
+					
+					confirmationPane.add(new JLabel("Remaining checkups: " + hcp.getRemCheckups()));
+					confirmationPane.add(new JLabel("Remaining hygiene visits: " + hcp.getRemHygiene()));
+					confirmationPane.add(new JLabel("Remaining repairs: " + hcp.getRemRepairs()));
+				}
+				tqp.close();
+				
+				
+				
+				
+				JOptionPane.showMessageDialog(null, confirmationPane);
+				disposeFrame();
+				/*Container cp = getContentPane();
+				cp.remove(scrollPane);
+				cp.remove(paymentPanel);
+				
+				cp.add(new JLabel("No treatments."));*/
+				
+			}
+		});
+        
         add(new JLabel(patientName),BorderLayout.NORTH);
 	    add(scrollPane,BorderLayout.CENTER);
-	    add(new JLabel("Final Cost: " + costSum),BorderLayout.SOUTH);
+	    add(paymentPanel,BorderLayout.SOUTH);
 		setVisible(true);
 	}
 	
+	public void disposeFrame() {
+		this.dispose();
+	}
+	
+	
 	public static class HealthCarePlan {
+		private int coveredCheckups;
+		private int coveredHygiene;
+		private int coveredRepairs;
+		
 		private int remCheckups;
 		private int remHygiene;
-		private int remRepairs; 
+		private int remRepairs;
 		
-		public HealthCarePlan(int remCheckups, int remHygiene,int remRepairs) {
-			this.remCheckups = remCheckups;
-			this.remHygiene = remHygiene;
-			this.remRepairs = remRepairs;
+		public HealthCarePlan(int c, int h,int r) {
+			coveredCheckups = c;
+			coveredHygiene = h;
+			coveredRepairs = r;
 		}
-
+		
+		public int getCoveredCheckups() { return coveredCheckups; }
+		public int getCoveredHygiene() { return coveredHygiene; }
+		public int getCoveredRepairs() { return coveredRepairs; }
+		
+		public void setRemCheckups(int c) { remCheckups = c; }
+		public void setRemHygiene(int h) { remHygiene = h; }
+		public void setRemRepairs(int r) { remRepairs = r; }
+		
 		public int getRemCheckups() { return remCheckups; }
 		public int getRemHygiene() { return remHygiene; }
 		public int getRemRepairs() { return remRepairs; }
-		public String toString() { return remCheckups + " " + remHygiene + " "+ remRepairs; }
+		
+		public int getUsedCheckups() {return coveredCheckups-remCheckups;}
+		public int getUsedHygiene() {return coveredHygiene-remHygiene;}
+		public int getUsedRepairs() {return coveredRepairs-remRepairs;}
+
+		
+
+		public String toString() { return coveredCheckups + " " + coveredHygiene + " "+ coveredRepairs; }
 		
 	}
 	
