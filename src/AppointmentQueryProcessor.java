@@ -50,7 +50,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 		try {
 			Statement stmt = con.createStatement();
 			String partner = (p == Partner.DENTIST) ? "Dentist" : "Hygienist";
-			String query = "SELECT Start_Time,End_Time,Title,Forename,Surname FROM Appointment ap,Patient pt "
+			String query = "SELECT Start_Time,End_Time,Title,Forename,Surname,ap.Patient_Id FROM Appointment ap,Patient pt "
 							+ "WHERE ap.Patient_Id=pt.Patient_Id AND Date='" + date.substring(2) 
 							+ "' AND partner = '" + partner + "'";
 			ResultSet res = stmt.executeQuery(query);
@@ -59,14 +59,15 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			while (res.next()) {
 				 String startTime = res.getString(1); 
 				 String endTime = res.getString(2);
-				 String name = res.getString(3) + " " + res.getString(4).charAt(0) + ". " + res.getString(5); 
+				 String name = (res.getInt(6)==0)? "Not available.": 
+					 res.getString(3) + " " + res.getString(4).charAt(0) + ". " + res.getString(5); 
 				 appointments.add(new Appointment(startTime,endTime,name));
+				 
 			 }
 			
 			return appointments;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -105,6 +106,36 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			e.printStackTrace();
 			return 0;
 		}
+	}
+	
+	public void bookHoliday(Partner p,String startDate,String endDate) throws AppointmentsFrame.AppointmentException {
+		
+		String[] dateRange = DateProcessor.getRange(startDate, endDate);
+		
+		try {
+			Statement stmt = con.createStatement();
+			String partner = (p==Partner.DENTIST)? "Dentist" : "Hygienist";
+			for (String date:dateRange) {
+				String query = "SELECT COUNT(*) FROM Appointment WHERE Partner = '" + partner + "' AND Date ='" +date.substring(2)+ "';";
+
+				ResultSet res = stmt.executeQuery(query);
+				res.next();
+				if (res.getInt(1)!=0) {
+					throw new AppointmentsFrame.AppointmentException("There are client appointments between these dates.");
+				}
+			}
+			
+			for (String date:dateRange) {
+				bookAppointment(p, date, "09:00", "17:00", 0);
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
 	}
 	
 	public void close() {

@@ -1,5 +1,6 @@
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DateProcessor {
@@ -46,9 +47,41 @@ public class DateProcessor {
 		
 		return idates;
 	}
+	public static String[] getRange(String startDate,String endDate) throws AppointmentsFrame.AppointmentException {
+		if (startDate.compareTo(endDate)>0) {
+			throw new AppointmentsFrame.AppointmentException("Invalid date range.");
+		}
+		
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		ArrayList<String> dateList = new ArrayList<String>();
+		String currentDate = startDate;
+		try {
+			c.setTime(sdf.parse(currentDate));
+			while (currentDate.compareTo(endDate)<=0) {
+				dateList.add(currentDate);
+				c.add(Calendar.DATE, 1);
+				currentDate = sdf.format(c.getTime());
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		String[] s = new String[dateList.size()];
+		dateList.toArray(s);
+		return s;
+	}
 	
 	public static void main(String[] args) {
-		System.out.println("10:10".compareTo("09:20"));
+		try {
+			String[] range = getRange("2016-11-10","2016-12-09");
+			for (String s: range) {
+				System.out.println(s);
+			}
+		} catch (AppointmentsFrame.AppointmentException e) {
+			System.out.println("OPs");
+		}
 	}
 	
 }
