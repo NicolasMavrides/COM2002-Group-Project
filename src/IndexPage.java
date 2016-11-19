@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 public class IndexPage extends JFrame {
 	//main page buttons
 	private JButton viewCalendar;
-	private JButton bookAptmt;
+	private JButton regPatient;
 	private JButton subHealthPlan;
 	private JButton reviewTreatmt;
 	private JButton recordPaymt;
@@ -27,7 +27,7 @@ public class IndexPage extends JFrame {
 	    
 	    //construct buttons and their labels
 		viewCalendar = new JButton("View Calendar");
-		bookAptmt = new JButton("Book Appointment");
+		regPatient = new JButton("Register Patient");
 		subHealthPlan = new JButton("Subscribe Patient to Health Plan");
 		reviewTreatmt = new JButton("Review Patient Treatments");
 		recordPaymt = new JButton("Record Patient Payment");
@@ -35,7 +35,7 @@ public class IndexPage extends JFrame {
 		
 		//add buttons
 		add(viewCalendar);
-		add(bookAptmt);
+		add(regPatient);
 		add(subHealthPlan);
 		add(reviewTreatmt);
 		add(recordPaymt);
@@ -44,7 +44,7 @@ public class IndexPage extends JFrame {
 		EventHandler eHandler = new EventHandler();
 		//add action listeners to buttons
 		viewCalendar.addActionListener(eHandler);
-		bookAptmt.addActionListener(eHandler);
+		regPatient.addActionListener(eHandler);
 		subHealthPlan.addActionListener(eHandler);
 		//reviewTreatmt.addActionListener(eHandler);
 		recordPaymt.addActionListener(eHandler);
@@ -81,8 +81,8 @@ public class IndexPage extends JFrame {
 		public void actionPerformed(ActionEvent event) {	
 			if (event.getSource() == viewCalendar) {
 				new AppointmentsFrame();
-			} else if (event.getSource() == bookAptmt) {
-				//BOOK APPOINTMENT INTERFACE CODE
+			} else if (event.getSource() == regPatient) {
+				new RegisterPatient();
 			} else if (event.getSource() == subHealthPlan) {
 				new HealthCarePlanFrame();
 			} else if (event.getSource() == reviewTreatmt) {

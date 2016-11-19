@@ -1,6 +1,9 @@
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -9,6 +12,7 @@ import javax.swing.JTextField;
 
 public class RegisterPatient extends JFrame {
 	//labels
+	private JLabel id;
 	private JLabel title;
 	private JLabel name;
 	private JLabel surname;
@@ -21,6 +25,7 @@ public class RegisterPatient extends JFrame {
 	private JLabel postCode;
 
 	//text fields
+	private JTextField idf;
 	private JTextField titlef;
 	private JTextField namef;
 	private JTextField surnamef;
@@ -38,12 +43,13 @@ public class RegisterPatient extends JFrame {
 	//Constructor for the main page GUI
 	public RegisterPatient() {
 		super("Register Patient");
-		setLayout(new GridLayout(11,2));
+		setLayout(new GridLayout(12,2));
 		setSize(500,250);
 	    setLocationRelativeTo(null);
 		setResizable(false);
 	    
 	    //construct text labels/fields/button
+		id = new JLabel("ID: ");
 	    title = new JLabel("Title: ");
 	    name = new JLabel("Name: ");
 	    surname = new JLabel("Surname: ");
@@ -55,6 +61,7 @@ public class RegisterPatient extends JFrame {
 	    city = new JLabel("City: ");
 	    postCode = new JLabel("Post code: ");
 	    
+	    idf = new JTextField();
 	    titlef = new JTextField();
 	    namef = new JTextField();
 	    surnamef = new JTextField();
@@ -68,6 +75,8 @@ public class RegisterPatient extends JFrame {
 
 	    submit = new JButton("Submit");
 	    
+	    add(id);
+	    add(idf);
 		add(title);
 		add(titlef);
 		add(name);
@@ -92,7 +101,7 @@ public class RegisterPatient extends JFrame {
 		
 		//Declare new object for event handler
 		EventHandler eHandler = new EventHandler();
-		
+		idf.addActionListener(eHandler);
 		titlef.addActionListener(eHandler);
 		namef.addActionListener(eHandler);
 		surnamef.addActionListener(eHandler);
@@ -113,8 +122,27 @@ public class RegisterPatient extends JFrame {
 		//action listener method
 		public void actionPerformed(ActionEvent event) {	
 			if (event.getSource() == submit) {
-			//CODE TO GET INFO FROM TEXT FIELDS AND PUT INTO DB WHEN SUBMIT BUTTON IS PRESSED.
+				RegisterPatientQueryProcessor execute = new RegisterPatientQueryProcessor();
+				try {
+					execute.AddPatient(idf.getText(), titlef.getText(), namef.getText(), surnamef.getText(), dobf.getText(), 
+							phoneNumf.getText(), Integer.parseInt(houseNumf.getText()), streetf.getText(), postCodef.getText(), districtf.getText(), cityf.getText());
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+		}
+	}
+	
+	public class RegisterPatientQueryProcessor extends QueryProcessor {
+		public RegisterPatientQueryProcessor() {
+			super();
+		}
+		public void AddPatient(String id, String title, String name, String surname, String dob, String phoneNum, int houseNum, 
+				String streetf, String postCode, String district, String city) throws SQLException {
+			Statement stmt = con.createStatement();
+			stmt.executeUpdate("INSERT INTO Patient (Patient_ID, Title, Forename, Surname, Birth_Date, Phone_no, House_No, Post_Code, City) "
+					+ "VALUES ("+id+", '"+title+"', '"+name+"', '"+surname+"', '"+dob+"', '"+phoneNum+"', '"+houseNum+"', '"+postCode+"', '"+city+"')");
 		}
 	}
 }
