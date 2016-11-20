@@ -153,6 +153,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 		
 		
 	}
+<<<<<<< HEAD
 	
 	/*public void testDate() {
 		try {
@@ -170,6 +171,9 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 			e.printStackTrace();
 		}
 	}*/
+=======
+
+>>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
 	
 	public static void main(String[] args) {
 		AppointmentQueryProcessor apq = new AppointmentQueryProcessor();
