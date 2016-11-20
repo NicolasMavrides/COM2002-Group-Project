@@ -4,12 +4,7 @@ import java.util.ArrayList;
 public class TreatmentQueryProcessor extends QueryProcessor{
 	public TreatmentQueryProcessor() {super();}
 	
-<<<<<<< HEAD
-	public ArrayList<Treatment> getUnpaidTreatments(int id) {
-		try {
-			Statement stmt = con.createStatement();
-			String query = "SELECT op.name,tm.cost FROM Appointment ap, Operation op, Treatment tm WHERE " 
-=======
+
 	public boolean hasUnpaidAppointments(int id) {
 		try {
 			Statement stmt = con.createStatement();
@@ -27,7 +22,6 @@ public class TreatmentQueryProcessor extends QueryProcessor{
 		try {
 			Statement stmt = con.createStatement();
 			String query = "SELECT op.name,tm.cost,tm.cosmetic FROM Appointment ap, Operation op, Treatment tm WHERE " 
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
 						   +"(ap.Partner = op.Partner AND ap.Date = op.Date AND ap.Start_Time = op.Start_Time) " 
 						   +"AND op.name = tm.name AND ap.Patient_ID = " + id + " AND (ap.cost > 0)";
 			
@@ -35,11 +29,7 @@ public class TreatmentQueryProcessor extends QueryProcessor{
 			
 			ArrayList<Treatment> treatments = new ArrayList<Treatment>();
 			while (res.next()) {
-<<<<<<< HEAD
-				treatments.add(new Treatment(res.getString(1),res.getInt(2)));
-=======
 				treatments.add(new Treatment(res.getString(1),res.getInt(2),res.getBoolean(3)));
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
 			}
 			return treatments;
 			
@@ -57,12 +47,6 @@ public class TreatmentQueryProcessor extends QueryProcessor{
 			+" AND hcp.Name = hct.Name";
 			
 			ResultSet res = stmt.executeQuery(query);
-			
-<<<<<<< HEAD
-			//System.out.println(res.getInt(1)+ res.getInt(2)+ res.getInt(3));
-			
-=======
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
 			return (res.next()) ?  new ReviewTreatmentsFrame.HealthCarePlan(res.getInt(1), res.getInt(2), res.getInt(3)) : null;
 			
 		} catch (SQLException e) {
@@ -91,17 +75,5 @@ public class TreatmentQueryProcessor extends QueryProcessor{
 		}
 		
 	}
-	
-	public static void main(String[] args) {
-		TreatmentQueryProcessor qp = new TreatmentQueryProcessor();
-<<<<<<< HEAD
-		//qp.getHealthCarePlan(1);
-		qp.updateHealthCarePlan(1, 1, 1, 1);
-=======
-		qp.getUnpaidTreatments(2);
-		//qp.getHealthCarePlan(1);
-		//qp.updateHealthCarePlan(1, 1, 1, 1);
-		
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
-	}
+
 }

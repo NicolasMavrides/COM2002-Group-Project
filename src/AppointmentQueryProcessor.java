@@ -153,27 +153,6 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 		
 		
 	}
-<<<<<<< HEAD
-	
-	/*public void testDate() {
-		try {
-			Statement stmt = con.createStatement();
-			ResultSet res = stmt.executeQuery("SELECT * FROM Test");
-			
-			for (int i=0;i<3;i++) {
-				res.next();
-				System.out.println(res.getString(1));
-				System.out.println(res.getString(2));
-				System.out.println(res.getString(3));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-=======
-
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
 	
 	public static void main(String[] args) {
 		AppointmentQueryProcessor apq = new AppointmentQueryProcessor();

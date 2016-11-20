@@ -1,18 +1,8 @@
 import javax.swing.*;
-
-import java.awt.BorderLayout;
-<<<<<<< HEAD
-import java.awt.Container;
-=======
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-<<<<<<< HEAD
-import java.text.ParseException;
-=======
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
+
 import java.util.ArrayList;
 
 
@@ -44,10 +34,6 @@ public class ReviewTreatmentsFrame extends JFrame {
 		
 		
 	    if (hcp != null) {
-<<<<<<< HEAD
-	    	System.out.println(hcp.toString());
-=======
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
 	    	remCheckups = hcp.getCoveredCheckups();
 	    	remHygiene = hcp.getCoveredHygiene();
 	    	remRepairs = hcp.getCoveredRepairs();
@@ -131,16 +117,8 @@ public class ReviewTreatmentsFrame extends JFrame {
 				
 				
 				JOptionPane.showMessageDialog(null, confirmationPane);
-<<<<<<< HEAD
-				disposeFrame();
-				/*Container cp = getContentPane();
-				cp.remove(scrollPane);
-				cp.remove(paymentPanel);
-				
-				cp.add(new JLabel("No treatments."));*/
-=======
 				ReviewTreatmentsFrame.this.dispose();
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
+
 				
 			}
 		});
@@ -151,13 +129,6 @@ public class ReviewTreatmentsFrame extends JFrame {
 		setVisible(true);
 	}
 	
-<<<<<<< HEAD
-	public void disposeFrame() {
-		this.dispose();
-	}
-	
-=======
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
 	
 	public static class HealthCarePlan {
 		private int coveredCheckups;
@@ -192,20 +163,13 @@ public class ReviewTreatmentsFrame extends JFrame {
 
 		
 
-<<<<<<< HEAD
-		public String toString() { return coveredCheckups + " " + coveredHygiene + " "+ coveredRepairs; }
-=======
 		public String toString() { return coveredCheckups + " " + coveredHygiene + " " + coveredRepairs; }
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
 		
 	}
 	
 	public static void main(String[] args) {
-<<<<<<< HEAD
 		new ReviewTreatmentsFrame(1);
-=======
-		new ReviewTreatmentsFrame(2);
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
+
 	}
 	
 }

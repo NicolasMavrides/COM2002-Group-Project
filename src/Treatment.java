@@ -4,17 +4,7 @@ public class Treatment {
 	private int cost;
 	private TreatmentType type;
 	
-<<<<<<< HEAD
-	public Treatment(String name, int cost) {
-		this.name = name;
-		this.cost = cost;
-		
-		switch (name) {
-			case "check-up": type = TreatmentType.CHECKUP; break;
-			case "hygiene": type = TreatmentType.HYGIENE; break;
-			default: type = TreatmentType.REPAIR; break;
-		}
-=======
+
 	public Treatment(String name, int cost,boolean cosmetic) {
 		this.name = name;
 		this.cost = cost;
@@ -28,8 +18,7 @@ public class Treatment {
 				default: type = TreatmentType.REPAIR; break;
 			}
 		}
-		
->>>>>>> 2a780cfdcf7aa0109d1cc485f29e3d581eaefd8f
+
 	}
 
 	public String getName() {

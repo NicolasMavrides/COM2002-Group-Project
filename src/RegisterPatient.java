@@ -127,7 +127,6 @@ public class RegisterPatient extends JFrame {
 					execute.AddPatient(idf.getText(), titlef.getText(), namef.getText(), surnamef.getText(), dobf.getText(), 
 							phoneNumf.getText(), Integer.parseInt(houseNumf.getText()), streetf.getText(), postCodef.getText(), districtf.getText(), cityf.getText());
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
