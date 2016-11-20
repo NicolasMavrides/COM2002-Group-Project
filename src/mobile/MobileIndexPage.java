@@ -1,11 +1,10 @@
 package mobile;
-//import ReviewTreatmentsFrame;
-//import TreatmentQueryProcessor;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+
 
 @SuppressWarnings("serial")
 
@@ -17,7 +16,7 @@ public class MobileIndexPage extends JFrame {
 	//Constructor for the main page GUI
 	public MobileIndexPage() {
 		super("Mobile Dental System");
-		setLayout(new GridLayout(4,1));
+		setLayout(new GridLayout(4,2));
 		setSize(500,200);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,7 +49,7 @@ public class MobileIndexPage extends JFrame {
 				//Record one or more treatments given to the patient in the last consultation, indicating the
 				//kind of treatment and its cost.
 			} else if (event.getSource() == recordTreatment) {
-				//new RecordTreatments();
+				new RecordTreatments();
 				//Record that they have now finished seeing this patient, committing the above changes to
 				//the shared database.
 			}
