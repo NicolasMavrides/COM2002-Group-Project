@@ -1,28 +1,24 @@
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class IndexPage extends JFrame {
 	//main page buttons
 	private JButton viewCalendar;
 	private JButton regPatient;
 	private JButton subHealthPlan;
 	private JButton reviewTreatmt;
-	private JButton recordPaymt;
 	
 	//Constructor for the main page GUI
 	public IndexPage() {
 		super("Dental System");
-		setLayout(new GridLayout(5,1));
+		setLayout(new GridLayout(4,1));
 		setSize(500,200);
 		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setLocationRelativeTo(null);
 	    
 	    //construct buttons and their labels
@@ -30,15 +26,12 @@ public class IndexPage extends JFrame {
 		regPatient = new JButton("Register Patient");
 		subHealthPlan = new JButton("Subscribe Patient to Health Plan");
 		reviewTreatmt = new JButton("Review Patient Treatments");
-		recordPaymt = new JButton("Record Patient Payment");
-		//TODO: add register patient button
 		
 		//add buttons
 		add(viewCalendar);
 		add(regPatient);
 		add(subHealthPlan);
 		add(reviewTreatmt);
-		add(recordPaymt);
 		
 		//Declare new object for event handler
 		EventHandler eHandler = new EventHandler();
@@ -46,18 +39,20 @@ public class IndexPage extends JFrame {
 		viewCalendar.addActionListener(eHandler);
 		regPatient.addActionListener(eHandler);
 		subHealthPlan.addActionListener(eHandler);
-		//reviewTreatmt.addActionListener(eHandler);
-		recordPaymt.addActionListener(eHandler);
+		
 		
 		reviewTreatmt.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				try {
 					int id = Integer.valueOf(JOptionPane.showInputDialog("Enter member id:")); 
-					QueryProcessor qp = new QueryProcessor();
+					TreatmentQueryProcessor qp = new TreatmentQueryProcessor();
 					
 					if (!qp.memberExists(id)) {
 						throw new InputException("Member doesn't exist.");
+					}
+					if (!qp.hasUnpaidAppointments(id)) {
+						throw new InputException("No treatments found.");
 					}
 					qp.close();
 					new ReviewTreatmentsFrame(id);
@@ -92,6 +87,7 @@ public class IndexPage extends JFrame {
 			}
 		}
 	}
+	
 	
 	private class InputException extends Exception {
 		String errorMsg;

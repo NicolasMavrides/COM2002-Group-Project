@@ -4,10 +4,23 @@ import java.util.ArrayList;
 public class TreatmentQueryProcessor extends QueryProcessor{
 	public TreatmentQueryProcessor() {super();}
 	
+	public boolean hasUnpaidAppointments(int id) {
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet res = stmt.executeQuery("SELECT COUNT(*) FROM Appointment WHERE (Cost>0) AND Patient_ID = " + id);
+			res.next();
+			return (res.getInt(1)>0) ? true : false;
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public ArrayList<Treatment> getUnpaidTreatments(int id) {
 		try {
 			Statement stmt = con.createStatement();
-			String query = "SELECT op.name,tm.cost FROM Appointment ap, Operation op, Treatment tm WHERE " 
+			String query = "SELECT op.name,tm.cost,tm.cosmetic FROM Appointment ap, Operation op, Treatment tm WHERE " 
 						   +"(ap.Partner = op.Partner AND ap.Date = op.Date AND ap.Start_Time = op.Start_Time) " 
 						   +"AND op.name = tm.name AND ap.Patient_ID = " + id + " AND (ap.cost > 0)";
 			
@@ -15,7 +28,7 @@ public class TreatmentQueryProcessor extends QueryProcessor{
 			
 			ArrayList<Treatment> treatments = new ArrayList<Treatment>();
 			while (res.next()) {
-				treatments.add(new Treatment(res.getString(1),res.getInt(2)));
+				treatments.add(new Treatment(res.getString(1),res.getInt(2),res.getBoolean(3)));
 			}
 			return treatments;
 			
@@ -33,8 +46,6 @@ public class TreatmentQueryProcessor extends QueryProcessor{
 			+" AND hcp.Name = hct.Name";
 			
 			ResultSet res = stmt.executeQuery(query);
-			
-			//System.out.println(res.getInt(1)+ res.getInt(2)+ res.getInt(3));
 			
 			return (res.next()) ?  new ReviewTreatmentsFrame.HealthCarePlan(res.getInt(1), res.getInt(2), res.getInt(3)) : null;
 			
@@ -67,7 +78,9 @@ public class TreatmentQueryProcessor extends QueryProcessor{
 	
 	public static void main(String[] args) {
 		TreatmentQueryProcessor qp = new TreatmentQueryProcessor();
+		qp.getUnpaidTreatments(2);
 		//qp.getHealthCarePlan(1);
-		qp.updateHealthCarePlan(1, 1, 1, 1);
+		//qp.updateHealthCarePlan(1, 1, 1, 1);
+		
 	}
 }

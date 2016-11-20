@@ -1,12 +1,10 @@
 import javax.swing.*;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
 import java.util.ArrayList;
 
 
@@ -38,7 +36,6 @@ public class ReviewTreatmentsFrame extends JFrame {
 		
 		
 	    if (hcp != null) {
-	    	System.out.println(hcp.toString());
 	    	remCheckups = hcp.getCoveredCheckups();
 	    	remHygiene = hcp.getCoveredHygiene();
 	    	remRepairs = hcp.getCoveredRepairs();
@@ -122,12 +119,7 @@ public class ReviewTreatmentsFrame extends JFrame {
 				
 				
 				JOptionPane.showMessageDialog(null, confirmationPane);
-				disposeFrame();
-				/*Container cp = getContentPane();
-				cp.remove(scrollPane);
-				cp.remove(paymentPanel);
-				
-				cp.add(new JLabel("No treatments."));*/
+				ReviewTreatmentsFrame.this.dispose();
 				
 			}
 		});
@@ -136,10 +128,6 @@ public class ReviewTreatmentsFrame extends JFrame {
 	    add(scrollPane,BorderLayout.CENTER);
 	    add(paymentPanel,BorderLayout.SOUTH);
 		setVisible(true);
-	}
-	
-	public void disposeFrame() {
-		this.dispose();
 	}
 	
 	
@@ -176,12 +164,12 @@ public class ReviewTreatmentsFrame extends JFrame {
 
 		
 
-		public String toString() { return coveredCheckups + " " + coveredHygiene + " "+ coveredRepairs; }
+		public String toString() { return coveredCheckups + " " + coveredHygiene + " " + coveredRepairs; }
 		
 	}
 	
 	public static void main(String[] args) {
-		new ReviewTreatmentsFrame(1);
+		new ReviewTreatmentsFrame(2);
 	}
 	
 }

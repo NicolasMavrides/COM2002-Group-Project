@@ -4,15 +4,20 @@ public class Treatment {
 	private int cost;
 	private TreatmentType type;
 	
-	public Treatment(String name, int cost) {
+	public Treatment(String name, int cost,boolean cosmetic) {
 		this.name = name;
 		this.cost = cost;
-		
-		switch (name) {
-			case "check-up": type = TreatmentType.CHECKUP; break;
-			case "hygiene": type = TreatmentType.HYGIENE; break;
-			default: type = TreatmentType.REPAIR; break;
+		if (cosmetic) {
+			type = TreatmentType.COSMETIC;
 		}
+		else {
+			switch (name) {
+				case "check-up": type = TreatmentType.CHECKUP; break;
+				case "hygiene": type = TreatmentType.HYGIENE; break;
+				default: type = TreatmentType.REPAIR; break;
+			}
+		}
+		
 	}
 
 	public String getName() {
