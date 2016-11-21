@@ -16,6 +16,5 @@ public class RecordTreatments extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setLocationRelativeTo(null);
-	    setVisible(true);	    
 	}
 }
