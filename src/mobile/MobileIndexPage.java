@@ -45,13 +45,10 @@ public class MobileIndexPage extends JFrame {
 				//View all their appointments for a given day, seeing clearly which patient is up for the next
 				//appointment on a given day. 
 			} else if (event.getSource() == recordTreatment) {
-				//new RecordTreatments();
+				new RecordTreatments();
 				//Record one or more treatments given to the patient in the last consultation, indicating the
 				//kind of treatment and its cost.
-			} else if (event.getSource() == recordTreatment) {
-				new RecordTreatments();
-				//Record that they have now finished seeing this patient, committing the above changes to
-				//the shared database.
+				//Table: Operation
 			}
 		}
 	}
