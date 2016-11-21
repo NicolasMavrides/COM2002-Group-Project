@@ -67,6 +67,3 @@ public class RecordTreatments extends JFrame {
 			}
 		}
 	}
-	
-	
-	
