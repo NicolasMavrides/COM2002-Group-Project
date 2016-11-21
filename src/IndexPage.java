@@ -23,7 +23,7 @@ public class IndexPage extends JFrame {
 	    setLocationRelativeTo(null);
 	    
 	    //construct buttons and their labels
-		viewCalendar = new JButton("View Calendar");
+		viewCalendar = new JButton("View Appointment Calendar");
 		regPatient = new JButton("Register Patient");
 		subHealthPlan = new JButton("Subscribe Patient to Health Plan");
 		reviewTreatmt = new JButton("Review Patient Treatments");
@@ -82,7 +82,7 @@ public class IndexPage extends JFrame {
 			if (event.getSource() == viewCalendar) {
 				new AppointmentsFrame();
 			} else if (event.getSource() == regPatient) {
-				new RegisterPatient();
+				new RegistrationFrame();
 			} else if (event.getSource() == subHealthPlan) {
 				new HealthCarePlanFrame();
 			} else if (event.getSource() == reviewTreatmt) {

@@ -25,7 +25,7 @@ public class ReviewTreatmentsFrame extends JFrame {
 	    
 	    
 	    final int N_TREATMENTS= treatments.size();
-	    String[] columnNames = {"Name","Individual Cost","Covered by Healthcare Plan"};
+	    String[] columnNames = {"Treatment Name","Individual Cost","Covered by Healthcare Plan"};
 	    Object[][] data = new Object[N_TREATMENTS][3];
 	    
 	    int remCheckups = 0;

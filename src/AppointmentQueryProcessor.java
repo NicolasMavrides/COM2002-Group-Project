@@ -20,7 +20,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 				String st = res.getString(1);
 				String et = res.getString(2);
 				
-				if ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0)) {
+				if ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0) || (startTime.compareTo(st)<=0 && endTime.compareTo(et)>=0)) {
 					throw new AppointmentsFrame.AppointmentException("Conflicting with other personal appointments.");
 				}
 			}
@@ -31,7 +31,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 				String st = res.getString(1);
 				String et = res.getString(2);
 				
-				if ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0)) {
+				if ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0) || (startTime.compareTo(st)<=0 && endTime.compareTo(et)>=0)) {
 					throw new AppointmentsFrame.AppointmentException(partner+" is not available at that time.");
 				}
 			}
@@ -104,7 +104,7 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 					return date;
 				}
 			}
-			return null;//res.getString(1);
+			return null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -155,7 +155,18 @@ public class AppointmentQueryProcessor extends QueryProcessor {
 	}
 	
 	public static void main(String[] args) {
-		AppointmentQueryProcessor apq = new AppointmentQueryProcessor();
-		//apq.testDate();
+		String start[] = {"11:00","11:40","10:00","12:20","11:00","12:00","11:20","11:40"};
+		String end[] =   {"11:40","12:20","11:00","13:00","11:20","12:20","11:40","12:00"};
+		String startTime = "11:20";
+		String endTime = "12:00";
+		
+		for (int i =0;i<start.length;i++) {
+ 			String st = start[i];
+ 			String et = end[i];
+ 			System.out.println(st + '-' + et +':' + ((startTime.compareTo(et)>=0) || (endTime.compareTo(et)<=0)));
+ 			//System.out.println(st + '-' + et +':' + ((startTime.compareTo(st)>=0 && startTime.compareTo(et)<0) || (endTime.compareTo(st)>0 && endTime.compareTo(et)<=0)));
+ 			
+			 				
+		}
 	}
 }
